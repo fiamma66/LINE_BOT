@@ -1,0 +1,178 @@
+.navbar-inverse{
+  background-color: rgb(41,208,190) ;
+}
+
+.galleryOnClick {
+  /*filter: brightness(30%);
+  opacity: 0.50;*/
+  box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.075), 0px 0px 8px #00ff00;
+}
+
+
+
+
+
+
+
+img{
+  border-radius: 6px;
+  
+}
+img:hover{
+  transform: scale(1.01);
+  transition: transform cubic-bezier(0.4, 0, 0.2, 1) 450ms;
+}
+div.gallery:hover {
+  
+  border-radius: 8px;
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+div.gallery {
+  margin: 3px;
+}
+
+div.gallery img {
+  width: 100%;
+  height: auto;
+  
+  background-size: cover;
+  background-position: center;
+}
+
+div.desc {
+  padding: 15px;
+  text-align: center;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.responsive {
+  padding: 3px;
+  
+  float: left;
+  width: 31.99999%;
+  
+  margin: 2px;
+  
+}
+
+@media only screen and (max-width: 700px) {
+  .responsive {
+    width: 49.9999%;
+    
+    margin: 4px 0;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .responsive {
+    width: 49.9999%;
+    
+    
+  }
+}
+
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  border-radius: 6px;
+  color: white;
+  padding: 16px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  font-size: 16px;
+  margin: 4px auto;
+  cursor: pointer;
+}
+.button:hover {
+  
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+  
+
+
+.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+
+/* background modal */
+.modal{
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
+
+}
+
+
+
+/* 圖片顯示格式 */
+.modal-content{
+  margin: auto;
+  display: block;
+  width: 80%
+  max-width: 700px;
+}
+/* modal 在小畫面的呈現 */
+@media only screen and (max-width: 700px){
+  .modal-content {
+    width: 100%;
+  }
+}
+
+/* 圖片下面的字體 */
+#caption {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
+  text-align: center;
+  color: #ccc;
+  padding: 10px 0;
+  height: 150px;
+}
+/* 動畫部分 */
+.modal-content, #caption {  
+  animation-name: zoom;
+  animation-duration: 0.6s;
+}
+/* 定義動畫 */
+@keyframes zoom {
+  from {transform: scale(0.1)}
+  to {transform: scale(1)}
+}
+/* 顯示圖片時 關閉圖片的按鈕 */
+.close {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+/* 滑鼠指到 xx時 */
+.close:hover,
+.close:focus {
+  color: #bbb;
+  text-decoration: none;
+  cursor: pointer;
+}

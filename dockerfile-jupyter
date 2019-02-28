@@ -1,0 +1,11 @@
+
+FROM jupyter/base-notebook
+
+#update pip
+RUN pip install --upgrade pip
+#install flask
+RUN pip install flask==0.12 requests line-bot-sdk 
+RUN pip install requests
+RUN pip install python-dotenv
+RUN pip install line-bot-sdk
+RUN pip install kafka-python
