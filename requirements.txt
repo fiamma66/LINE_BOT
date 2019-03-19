@@ -1,0 +1,13 @@
+jieba
+flask==0.12
+pymongo
+requests
+python-dotenv
+line-bot-sdk
+kafka-python
+pytz
+mysqlclient
+PyMySQL
+
+
+

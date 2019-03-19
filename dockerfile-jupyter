@@ -9,3 +9,15 @@ RUN pip install requests
 RUN pip install python-dotenv
 RUN pip install line-bot-sdk
 RUN pip install kafka-python
+RUN pip install pytz
+RUN pip install pymongo
+
+USER root
+RUN apt-get update -y
+RUN apt-get install gcc -y
+RUN apt-get install -y python-dev default-libmysqlclient-dev
+RUN apt-get install -y python3-dev
+
+USER jovyan
+RUN pip install mysqlclient
+RUN pip install PyMySQL

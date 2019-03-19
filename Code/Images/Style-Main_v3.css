@@ -1,0 +1,117 @@
+
+.body {  
+  padding: 25px;
+  
+}
+.button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 10px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+#floating-panel {   
+  background-color: E6FCED;  
+  text-align: center;
+  font-family: 'Roboto','sans-serif';
+  line-height: 30px;
+  padding-left: 10px;
+}
+
+div.backstretch {
+  opacity: 0.5;
+  
+}
+
+.recommand {
+  width: 100%;
+  height: auto;  
+  background-size: cover;
+  background-position: center;
+  filter: blur(1px);
+}
+
+
+
+
+.gallery img {
+  width: 49.999%;
+  height: auto;
+  padding: 20px;
+  display: block;
+  margin: auto;
+
+}
+
+
+
+.textrank {
+  font-size:12px;
+  background-color:#e2e0e0;  
+  width: 70%;
+  display: block;
+  text-align: center;
+  margin: auto;
+}
+
+.comment {
+  width: 60%;
+  height: auto;
+  margin: auto;
+  display: block;
+  opacity: 80%;
+  filter: blur(2px);
+  border-radius: 20px;
+  
+  
+}
+
+
+.responsive {
+  width: 100%;
+  float: right;
+  
+  margin: 3px;
+
+}
+.responsive img {
+  width: 50%;
+
+}
+
+@media only screen and (max-width: 700px) {
+  .responsive {
+    width: 49.9999%;
+    
+    margin: 4px 0;
+  }
+  .responsive img {
+  width: 100%;
+
+}
+  
+}
+@media only screen and (max-width: 500px) {
+  .responsive {
+    width: 49.9999%;    
+  }
+  .responsive img {
+  width: 100%;
+
+}
+
+}
+
+
+#map {
+  height: 250px;
+  width: auto;
+}
+
+
