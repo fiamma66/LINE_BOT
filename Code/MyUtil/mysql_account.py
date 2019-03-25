@@ -1,4 +1,8 @@
 
+"""
+放入資料庫密碼
+"""
+
 
 class MongoBase:
     username = "root"

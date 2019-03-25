@@ -1,3 +1,11 @@
+""" 取得用戶位置資訊的 HTML
+使用 Geolocation API
+1. getCurrentPosition
+2. watchPosition
+傳遞Json 回到 Flask 接口
+1. JQuery Ajax
+
+"""
 
 
 def location_html(userid):
@@ -7,7 +15,7 @@ def location_html(userid):
 <html>
 
 <head>
-	<meta charset="utf-8">
+    <meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
 	<title>GeoLocation</title>
 
@@ -187,6 +195,6 @@ def location_html(userid):
 
 </html>
     
-    """% (userid)
+    """ % userid
 
     return html

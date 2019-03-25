@@ -1,6 +1,12 @@
 import statistics
 import random
 
+"""
+餐廳主頁的 html
+傳入 MongoDB 查詢結果
+
+"""
+
 
 # fetch 包成list 傳入
 def res_html(fetchall):
@@ -40,6 +46,18 @@ def res_html(fetchall):
 	</script>
 </head>
 <body class='body'>
+	<div>
+    <div id="floating-panel">
+      <b>Mode of Travel: </b>
+      <select id="mode">
+        <option value="DRIVING">Driving</option>
+        <option value="WALKING">Walking</option>
+        <option value="BICYCLING">Bicycling</option>
+        <option value="TRANSIT">Transit</option>
+      </select>
+      <button class='button' onclick='navigateMe()'> 導航GO</button>
+    </div>
+    <div id='navigate' style="color: red; text-align: center;"></div>
 	<!-- Put Map here -->
 	<div>
 		<div id="map"></div>
@@ -96,7 +114,7 @@ def res_html(fetchall):
 
     article = list(map(get_article, fetchall))
 
-    def gen_textrank(article):
+    def gen_textrank(all_article):
 
         # list article
         # article = [title, href, img , trk1, trk2, trk3]
@@ -111,7 +129,7 @@ def res_html(fetchall):
           <p class='textrank'>2. {4}</p>
           <p class='textrank'>3. {5}</p>
         </div>
-      """.format(*article)
+      """.format(*all_article)
 
         return textrank_html
 
@@ -120,9 +138,9 @@ def res_html(fetchall):
 
     # 圖片部分
     # img_list = [img0,.....img9].__len__() = 10
-    def extract_imgs(fetchall):
+    def extract_imgs(fetchall_obj):
         img_list = []
-        for every_img in fetchall.get("img"):
+        for every_img in fetchall_obj.get("img"):
             img_list.append(every_img)
 
         return img_list
@@ -200,7 +218,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/danielgindi-jquery-backstretch/2.1.1
           cssEase: 'linear',
           mobileFirst: true,
         });
-        $(document.body).backstretch("http://xuexi.leawo.cn/uploads/allimg/170602/11131242W-2.gif");
+        $(document.body).backstretch("/Images/background.gif");
         console.log("ready");
       });  
 
@@ -318,27 +336,3 @@ src="https://cdnjs.cloudflare.com/ajax/libs/danielgindi-jquery-backstretch/2.1.1
 
 if __name__ == "__main__":
     pass
-#     import time
-#     from Mongo_account import MongoBase
-#     import pymongo
-#     start = time.time()
-#     m = MongoBase()
-#     mongo = pymongo.MongoClient(host="3.112.84.18",
-#                                 username=m.username,
-#                                 password=m.password,
-#                                 authSource=m.authSource,
-#                                 authMechanism=m.authMechanism
-#                                 )
-#     db = mongo["res"]
-#     col = db["resInfo"]
-#     query = {"phone": "0221819999"}
-
-#     doc = col.find(query, {"_id": 0, "comment": 0, "content": 0})
-
-
-#     print(res_html(doc))
-#     print("============Time Spend===========")
-#     print("Use : " , time.time() - start)
-
-
-

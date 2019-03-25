@@ -1,23 +1,29 @@
+import sys
 import pymongo
 from kafka import KafkaProducer
 from linebot.models import *
-from .pylineliff.liff_api import *
-from .MyUtil import *
 import time
-import json
 import MySQLdb
-import random
 import re
+
+"""
+載入我們自用的工具包
+
+"""
+sys.path.append('/Users/fiammahsu/Workplace/python/LINE_BOT/')
+from Code.MyUtil import *
+from Code.pylineliff.liff_api import *
+
 
 """
 
 啟用伺服器基本樣板
 
 """
-# 引用Web Server套件
+
 from flask import Flask, request, abort, render_template_string, redirect
 
-# 從linebot 套件包裡引用 LineBotApi 與 WebhookHandler 類別
+
 from linebot import (
     LineBotApi, WebhookHandler
 )
@@ -120,7 +126,7 @@ def reply_text_and_get_user_profile(event):
     linkMenuEndpoint = 'https://api.line.me/v2/bot/user/%s/richmenu/%s' % (event.source.user_id, linkRichMenuId)
     linkMenuRequestHeader = {'Content-Type': 'image/jpeg', 'Authorization': 'Bearer %s' % channel_access_token}
     lineLinkMenuResponse = requests.post(linkMenuEndpoint, headers=linkMenuRequestHeader)
-
+    app.logger.info("Link Menu to %s status :" % user_id, lineLinkMenuResponse)
     # 回覆文字消息與圖片消息
     line_bot_api.reply_message(
         event.reply_token,
@@ -147,8 +153,8 @@ def apply_liff_id(userid, route, pattern):
     # make sure liff amount not exceed 15
     if liff_list().get("apps") is not None:
         if len(liff_list().get("apps")) >= 15:
-            for liffID in liff_list().get("apps"):
-                liff_delete(liffID.get("liffId"))
+            for every_liff in liff_list().get("apps"):
+                liff_delete(every_liff.get("liffId"))
 
     liff_app_id = liff_add(liff_url, pattern)
 
@@ -178,7 +184,7 @@ def flex_send_whateat():
     # 對 Tuple 內所有參數 使用 gen_bubble 產生 bubble_message
     # 用 map 搭配 lambda 
     # 再用 list 包住 傳給 gen_flex 產生 flexMessage
-    bubble_list = list(map(lambda x: gen_bubble(x), tu))
+    bubble_list = list(map(lambda x: gen_bubble(x, server_url=server_url), tu))
 
     bubble_content = gen_flex(bubble_list)
     flex_content = CarouselContainer.new_from_json_dict(json.loads(bubble_content))
@@ -212,8 +218,8 @@ def flex_send_whateat():
 # 塞進 flex bubble
 def graph_liff_message(userID):
     User = userID
-    liffID = apply_liff_id(User, route='graphLIFF=', pattern='tall')
-    graph_liff_url = "line://app/%s" % liffID.get("liffId")
+    liff_id = apply_liff_id(User, route='graphLIFF=', pattern='tall')
+    graph_liff_url = "line://app/%s" % liff_id.get("liffId")
 
     liff_flex_bubble = graph_bubble(graph_liff_url)
 
@@ -246,9 +252,9 @@ def post_graph():
     body = json.loads(request.get_data(as_text=True))
 
     user = body.get("user")
-    graph = body.get("graph")
+    user_graph = body.get("graph")
 
-    graph_future = producer.send(topic="mytopics", key=user, value=list(graph.values()))
+    graph_future = producer.send(topic="mytopics", key=user, value=list(user_graph.values()))
     graph_future.get(timeout=50)
     print(body)
 
@@ -283,11 +289,11 @@ def liffID(userid):
     return render_template_string(html)
 
 
-def location_liff_message(userID):
-    user = userID
+def location_liff_message(userid):
+    user = userid
 
-    liffID = apply_liff_id(user, route='liffID=', pattern='compact')
-    location_liff_url = "line://app/%s" % liffID.get("liffId")
+    liff_id = apply_liff_id(user, route='liffID=', pattern='compact')
+    location_liff_url = "line://app/%s" % liff_id.get("liffId")
 
     liff_flex_bubble = location_bubble(location_liff_url)
 
@@ -335,9 +341,9 @@ def post_location():
 
         new_tuple = ()
         for tup in tups:
-            a, b = tup
+            lat, lon = tup
             req_string = ""
-            req_string += str(a) + " " + str(b)
+            req_string += str(lat) + " " + str(lon)
             new_tuple += (req_string,)
 
         sql_location_string += ",".join(new_tuple)
@@ -388,7 +394,7 @@ def post_location():
         # 對 Tuple 內所有參數 使用 gen_bubble 產生 bubble_message
         # 用 map 搭配 lambda 
         # 再用 list 包住 傳給 gen_flex 產生 flexMessage
-        bubble_list = list(map(lambda x: gen_bubble(x), tu))
+        bubble_list = list(map(lambda x: gen_bubble(x, server_url=server_url), tu))
         flex = gen_flex(bubble_list)
         carousel_content = CarouselContainer.new_from_json_dict(json.loads(flex))
         message = FlexSendMessage(alt_text="Check phone", contents=carousel_content)
@@ -521,36 +527,35 @@ def main_page():
 
 
 @app.route("/countRes", methods=["POST"])
-def count_res():
+def countRes():
     data = json.loads(request.get_data(as_text=True))
+    timestamp = time.time()
 
-    res_id = data.get("resID")
+    resID = data.get("resID")
 
     response_data = {
-        "resID": res_id,
-        "String": "Hello"
+        "resID": resID,
     }
 
-    future = producer.send(topic="mytopics", key="test", value=response_data)
+    future = producer.send(topic="mytopics",
+                           key="timestamp",
+                           value=response_data)
     future.get(timeout=50)
-    return redirect("https://91e47741.ngrok.io/test")
+    return redirect("https://%s/cosin/time=%s" % (server_url, timestamp))
 
 
-@app.route("/test", methods=["GET"])
-def testing():
+@app.route("/cosin/time=<timestamp>", methods=["GET"])
+def testing(timestamp):
     from kafka import KafkaConsumer
-    timestamp = time.time()
-    # TODO Kafka Consumer special key
-    # consumer = KafkaConsumer("mytopics", bootstrap_servers=["kafka:9093"], auto_offset_reset='latest') 
-    # response_data=[]
-    # 
-    # for msg in consumer:
-    #     
-    #     value = json.loads(msg.value)
-    #     
-    #     response_data.append(value)
-    #     print(response_data[-1])
-    #     return jsonify(response_data[-1])
+    consumer = KafkaConsumer("mytopics",
+                             bootstrap_servers=["kafka:9093"],
+                             auto_offset_reset='latest')
+    response_data = []
+
+    for msg in consumer:
+        if msg.key == timestamp:
+            response_data.append(msg.value)
+
     return "ok"
 
 
@@ -599,7 +604,7 @@ Handler 處理進入的所有消息
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    if (event.message.text.find('::text:') != -1):
+    if event.message.text.find('::text:') != -1:
 
         line_bot_api.reply_message(
             event.reply_token,

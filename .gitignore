@@ -5,4 +5,5 @@ Code/.ipynb_checkpoints/*
 Code/line_secret_key
 __pycache__*
 Code/pylineliff/__*
+mongoData/*
 

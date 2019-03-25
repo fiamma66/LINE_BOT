@@ -2,6 +2,17 @@ import pytz
 import datetime
 from math import radians, cos, pi
 
+"""
+主要工具包
+產生 LINE Bubble
+產生 LINE Flex
+計算地理位置
+均在此處完成
+
+"""
+
+""" 給予用戶點選圖片的 Bubble """
+
 
 def graph_bubble(liff_url):
     if type(liff_url) != str:
@@ -98,6 +109,9 @@ def graph_bubble(liff_url):
     return bubble
 
 
+""" 給予用戶 位置推薦的 Bubble """
+
+
 def location_bubble(liff_url):
     if type(liff_url) != str:
         raise ValueError('liff url should be string')
@@ -183,6 +197,9 @@ def location_bubble(liff_url):
     return bubble
 
 
+""" 計算用戶地理位置 之簡單函式 """
+
+
 def count_gps(lat, lon, distance=0.7):
     # KM
     lat_diff = distance / 110.574
@@ -193,7 +210,10 @@ def count_gps(lat, lon, distance=0.7):
     s = lat - abs(lat_diff)
     e = lon + abs(lon_diff)
     w = lon - abs(lon_diff)
-    return (lat, n), (s, lon), (lat, w), (n, lon), (lat, e)
+    return (lat, e), (s, lon), (lat, w), (n, lon), (lat, e)
+
+
+""" 產生 Bubble 中 星星數量的函式 """
 
 
 def get_rate_string(rate):
@@ -210,6 +230,9 @@ def get_rate_string(rate):
     return rate_dict.get(srate)
 
 
+""" 產生 Bubble 中 金色星星數量的工具 """
+
+
 def get_gold_string():
     string = """
             {
@@ -218,6 +241,9 @@ def get_gold_string():
               "size": "sm"
             }"""
     return string
+
+
+""" 產生 Bubble 中 灰色星星數量的工具 """
 
 
 def get_grey_string():
@@ -230,30 +256,35 @@ def get_grey_string():
     return string
 
 
-def gen_bubble(*tup):
-    name, rate, address, optime, phone = ("", "", "", "", "")
-    for a, b, c, d, e in tup:
-        name = a
-        rate = b
-        address = c.replace("\r", "")
-        optime = d
-        phone = e
-    
+""" 產生推薦餐廳的 Bubble 傳入mysqlclient fetchall 結果 """
+
+
+def gen_bubble(*tup, server_url):
+    name, rate, address, optime, phone, image = list(*tup)
+    # for a, b, c, d, e in tup:
+    #     name = a
+    #     rate = b
+    #     address = c.replace("\r", "")
+    #     optime = d
+    #     phone = e
+    address = address.replace("\r", "").replace("\n", "")
+    optime = optime.replace("\t", "").replace("\r", "")
     getrate = get_rate_string(rate)
+    main_page = "https://" + server_url + "/index/resid="
     
     bubble = """
 {
     "type": "bubble",
     "hero": {
       "type": "image",
-      "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_1_cafe.png",
+      "url": "%s",
       "size": "full",
       "aspectRatio": "20:13",
       "aspectMode": "cover",
       "action": {
         "type": "uri",
         "label": "Line",
-        "uri": "https://linecorp.com/"
+        "uri": "%s"
       }
     },
     "body": {
@@ -357,7 +388,7 @@ def gen_bubble(*tup):
           "action": {
             "type": "uri",
             "label": "WEBSITE",
-            "uri": "https://linecorp.com"
+            "uri": "%s"
           },
           "height": "sm",
           "style": "link"
@@ -369,9 +400,12 @@ def gen_bubble(*tup):
       ]
     }
   }
-""" % (name, getrate, rate, address, optime, phone)
+""" % (image, image, name, getrate, rate, address, optime, phone, main_page)
 
     return bubble
+
+
+""" 將產生的 Bubble 裝進 Flex """
 
 
 def gen_flex(*bubble):
@@ -386,6 +420,9 @@ def gen_flex(*bubble):
 
     return flex
     
+
+""" 判斷今天星期幾的簡單工具 """
+
 
 def get_days():
     tp = pytz.timezone("Asia/Taipei")

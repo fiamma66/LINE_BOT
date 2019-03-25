@@ -1,3 +1,8 @@
+"""
+給予用戶點選圖片的 html
+主要使用 JQuery 完成圖片點選
+
+"""
 
 
 def get_image_reply_html(title):
@@ -14,7 +19,7 @@ def get_image_reply_html(title):
 	<!-- Latest compiled and minified CSS -->
 	<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
 	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-	<link rel='stylesheet' href='Images/style.css'>
+	<link rel='stylesheet' href='Images/style-graph.css'>
 
 	<!-- jQuery library -->
 	<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'>
@@ -30,8 +35,8 @@ def get_image_reply_html(title):
 
 
 <body>
-  
-  
+
+
 	<!--註解 (固定格式)  -->
 	<div style='text-align:center'>
 		<p style="font-size:24px">
@@ -48,31 +53,31 @@ def get_image_reply_html(title):
     <div id="caption"></div>
   </div>
 
-	
+
 	<div id='imageMap' class="w3-animate-opacity">
 		<!--第一個圖片放這邊    -->
-		
+
     <div class='responsive'>
 			<div class='gallery'>
-        
-				<img class="myImg" src='https://www.goodmorninggif.com/wp-content/uploads/2018/05/Beautiful-Nature-Good-Morning-Images.jpg' alt='Cat01' width='600' height='400' data-brand='夕陽'>
-        
+
+				<img class="myImg" src='/Images/movie.jpg' alt='Cat01' height='150' data-brand='影音藝文'>
+
       </div>
     </div>
 <!--第二個圖片放這邊    -->
     <div class='responsive'>
       <div class='gallery'>
-      
-      <img class="myImg" src='https://www.w3schools.com/w3css/img_lights.jpg' alt='Cat02' width='600' height='400' data-brand='極光''>
-       
+
+      <img class="myImg" src='/Images/3c.jpg' alt='Cat02' height='150' data-brand='3C商品''>
+
       </div>
     </div>
 <!--第三個圖片放這邊    -->    
     <div class='responsive'>
 			<div class='gallery'>
 
-				<img class="myImg" src='https://www.w3schools.com/howto/img_forest.jpg' alt='Cat01' width='600' height='400' data-brand='橋'>
-       
+				<img class="myImg" src='/Images/travel.jpg' alt='Cat01' height='150' data-brand='休閒旅遊'>
+
       </div>
     </div>
 
@@ -80,8 +85,8 @@ def get_image_reply_html(title):
     <div class='responsive'>
 			<div class='gallery'>
 
-				<img class="myImg" src='https://www.w3schools.com/howto/img_mountains.jpg' alt='Cat01' width='600' height='400' data-brand='山水''>
-       
+				<img class="myImg" src='/Images/service.PNG' alt='Cat01' height='150' data-brand='生活服務''>
+
       </div>
     </div>
 
@@ -89,21 +94,24 @@ def get_image_reply_html(title):
     <div class='responsive'>
 			<div class='gallery'>
 
-				<img class="myImg" src='https://www.w3schools.com/howto/img_snow.jpg' alt='Cat01' width='600' height='400' data-brand='冰河'>
-       
+				<img class="myImg" src='/Images/food.jpg' alt='Cat01' height='150' data-brand='美食'>
+
       </div>
     </div>
 <!--第六個圖片放這邊    -->
     <div class='responsive'>
 			<div class='gallery'>
 
-				<img class="myImg" src='https://global.canon/en/imaging/eosd/samples/eos1300d/img/sp/image_thumb_01.jpg' alt='Cat01' width='600' height='400' data-brand='Paris'>
-       
+				<img class="myImg" src='/Images/beauti.jpg' alt='Cat01' height='150' data-brand='美容美妝'>
+
       </div>
     </div>
-	
-  <br> 
 
+  <br> 
+  <br>   
+  <br> 
+  <br> 
+  <br> 
 
 
   <div>
@@ -113,14 +121,14 @@ def get_image_reply_html(title):
 
 <!--images map    -->
   </div>
-  
+
   <br>
 
 <script>
   // use jquery to get images
   // define prepared list
   // change here to get our new images and data tags
-  
+
   var secret = "%s"
   // get modal 
   var modal = document.getElementById("myModal");
@@ -139,38 +147,25 @@ def get_image_reply_html(title):
       window.onload = function() {
         if (oldonload) {
           oldonload();
-          
+
         }
         func();
       }
     }
   }
-  
+
   // preload images
   addLoadEvent(preload(
-    'https://www.goodmorninggif.com/wp-content/uploads/2018/05/Beautiful-Nature-Good-Morning-Images.jpg',
-    'https://www.w3schools.com/w3css/img_lights.jpg',
-    'https://www.w3schools.com/howto/img_forest.jpg',
-    'https://www.w3schools.com/howto/img_mountains.jpg',
-    'https://www.w3schools.com/howto/img_snow.jpg',
-    'https://global.canon/en/imaging/eosd/samples/eos1300d/img/sp/image_thumb_01.jpg',
-    'http://www.bigfoto.com/stones-background.jpg',
-    'http://www.wearedesignteam.com/design/images/free-images-of-travel.jpg',
-    'https://www.sony.net/Products/di_photo-gallery/images/extralarge/1229.jpg',
-    'http://www.bigfoto.com/lines-image.jpg',
-    'https://www.imagesfromcolorado.com/images/xl/Meadow-Creek-Reservoir-1.jpg',
-    'http://2.bp.blogspot.com/-5cJ7kzLilvo/U2fsRlOR6kI/AAAAAAAACMM/jsN7mAjKQm8/s1600/holding+hand+friend+love+close++(21).jpg',
-    'https://images.redframe.com/64026/1000/Image%%202%%20-%%20Caba%%20Perfection.jpg',
-    'https://cdn.zekkei-japan.jp/images/articles/fbd48098c0c2dd575d819ff12d93e578.jpg',
-    'http://shopsimage.com/wp-content/uploads/2018/06/26-11781-post/810%%E5%%A9%%9A%%E7%%B4%%97%%E6%%94%%9D%%E5%%BD%%B1-%%E5%%A9%%9A%%E7%%B4%%97%%E7%%85%%A7-%%E5%%8C%%97%%E6%%B5%%B7%%E5%%B2%%B8-%%E6%%B5%%B7%%E9%%82%%8A-%%E5%%A4%%95%%E9%%99%%BD(pp_w1200_h800).jpg',
-    'https://i2.wp.com/img.sainteat.tw/pixnet/56bff8373d08e0600618f7c9ee933e6b.jpg',
-    'https://watermark.lovepik.com/photo/50029/8274.jpg_wh1200.jpg',
-    'https://www.taiwanhot.net/wp-content/uploads/2018/11/5bfba50e4a699.jpg'
-
+    "/Images/beauti.jpg",
+    "/Images/food.jpg",
+    "/Images/service.PNG",
+    "/Images/travel.jpg",
+    "/Images/3c.jpg",
+    "/Images/movie.jpg"
   ))
 
   // define remove element in array
-  
+
   function arrayRemove(arr, value) {
    // filter 
    // Array.filter return elements not matching a value
@@ -179,7 +174,7 @@ def get_image_reply_html(title):
    });
 
   }
-  
+
   var modalImg = $('#img01');
   var captionText = document.getElementById("caption");
   var tapped = false;
@@ -208,7 +203,7 @@ def get_image_reply_html(title):
           imgcs.addClass("galleryOnClick");
           console.log(output);
           $('.button').removeClass("disabled");
-          
+
         } else {
           // 點過一次 重置點擊次數 並刪除元素資料
           output[imgcc.getAttribute("data-brand")] = 0;
@@ -219,7 +214,7 @@ def get_image_reply_html(title):
             $('.button').addClass("disabled");
           }
         }
-        
+
       },300); // wait 300ms then run single click code
     } else { //tapped within 300ms of last tap. double tap
       clearTimeout(tapped); //stop single tap callback
@@ -231,7 +226,7 @@ def get_image_reply_html(title):
       captionText.innerHTML = this.alt;
     }
     e.preventDefault();
-    
+
   });
   }
   // define click image 
@@ -252,7 +247,7 @@ def get_image_reply_html(title):
     $.ajax({
       type: "POST",
       url: "/post_graph",
-      
+
       data: JSON.stringify({graph: output, user:secret}),
     });
     imageMap.innerHTML = "<div style='text-align:center'><h1 style='color:#1E90FF'>收到回覆後就可以關閉了</h1></div>"
@@ -265,8 +260,8 @@ def get_image_reply_html(title):
 </body>
 
 </html>
-    
-    
+
+
     """ % title
-    
+
     return html
