@@ -24,7 +24,7 @@ create_docker_compose()
 docker-compose up -d --build
 }
 
-if [[ `docker images | grep _jupyter | wc -l` = 0 ]]; then
+if [[ `docker images | grep fiamma66/line_bot_jupyter | wc -l` = 0 ]]; then
   create_docker_compose
 else
   docker-compose up -d

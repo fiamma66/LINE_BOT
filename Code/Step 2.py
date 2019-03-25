@@ -5,12 +5,13 @@ from linebot.models import *
 import time
 import MySQLdb
 import re
+from os import path
 
 """
 載入我們自用的工具包
 
 """
-sys.path.append('/Users/fiammahsu/Workplace/python/LINE_BOT/')
+sys.path.append(path.dirname(sys.path[0]))
 from Code.MyUtil import *
 from Code.pylineliff.liff_api import *
 
@@ -47,7 +48,8 @@ producer = KafkaProducer(bootstrap_servers=["kafka:9093"],
 
 """ Basic File Data """
 
-secretFileContentJson = json.load(open("./line_secret_key", 'r'))
+line_secret_file = path.join(sys.path[0],"line_secret_key")
+secretFileContentJson = json.load(open(line_secret_file, 'r'))
 channel_access_token = secretFileContentJson["channel_access_token"]
 secret_key = secretFileContentJson["secret_key"]
 self_user_id = secretFileContentJson["self_user_id"]

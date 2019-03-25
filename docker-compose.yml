@@ -4,6 +4,7 @@ services:
     build:
       context: ./
       dockerfile: dockerfile-jupyter
+    image: fiamma66/line_bot_jupyter:latest
     container_name: jupyter
     restart: always
     ports:
