@@ -48,7 +48,7 @@ producer = KafkaProducer(bootstrap_servers=["kafka:9093"],
 
 """ Basic File Data """
 
-line_secret_file = path.join(sys.path[0],"line_secret_key")
+line_secret_file = path.join(sys.path[0], "line_secret_key")
 secretFileContentJson = json.load(open(line_secret_file, 'r'))
 channel_access_token = secretFileContentJson["channel_access_token"]
 secret_key = secretFileContentJson["secret_key"]
@@ -171,20 +171,32 @@ def apply_liff_id(userid, route, pattern):
 
 
 def flex_send_whateat():
+    bubble_list = cluster_bubbles()
+    content = CarouselContainer.new_from_json_dict(json.loads(gen_flex(bubble_list)))
+    Flex_message = FlexSendMessage(alt_text="flex", contents=content)
+    return Flex_message
+
+
+def flex_return_whateat(cluster):
+    cluster = str(cluster)
     a = MyAccount()
     # charset = utf-8
     conn = MySQLdb.connect(a.host, a.account, a.passwd, db="test", charset="utf8")
-    start = time.time()
-    cursor = conn.cursor()
+
     days = get_days()
+    cursor = conn.cursor()
 
     cursor.execute(
-        "SELECT Name,rate,address,%s,phone from res where rate >= 3 && %s != '' order by rand() limit 4" % (days, days))
+        """SELECT Name,rate,address,%s,phone,image 
+        from res_2 
+        where rate >= 3 && %s != '' && cluster = '%s' 
+        order by rand() 
+        limit 5""" % (days, days, cluster))
     tu = cursor.fetchall()
     conn.close()
 
     # 對 Tuple 內所有參數 使用 gen_bubble 產生 bubble_message
-    # 用 map 搭配 lambda 
+    # 用 map 搭配 lambda
     # 再用 list 包住 傳給 gen_flex 產生 flexMessage
     bubble_list = list(map(lambda x: gen_bubble(x, server_url=server_url), tu))
 
@@ -192,8 +204,6 @@ def flex_send_whateat():
     flex_content = CarouselContainer.new_from_json_dict(json.loads(bubble_content))
 
     Flex_message = FlexSendMessage(alt_text="Flex", contents=flex_content)
-    print("=====Time Spending=====")
-    print(time.time() - start)
     return Flex_message
 
 
@@ -501,23 +511,37 @@ quickReplyTextSendMessage = TextSendMessage(text="發送你的問題！", quick_
 """
 
 
-@app.route("/index/resid=", methods=["GET"])
-def main_page():
+@app.route("/index/resid=<phone>", methods=["GET"])
+def main_page(phone):
+    if str(phone) == "Not Available":
+        sorryhtml = "<div><img src='https://3dmart.com.tw/upload/news/2015/0924/123.jpg'>抱歉，網頁建置中</div>"
+
+        return render_template_string(sorryhtml)
+
+    a = MyAccount()
+    # charset = utf-8
+    conn = MySQLdb.connect(a.host, a.account, a.passwd, db="test", charset="utf8")
+
+    cursor = conn.cursor()
+    cursor.execute("select image from res_2 where phone=%s" % phone)
+    image = cursor.fetchone()[0]
+    conn.close()
+
     m = MongoBase()
     mongo = pymongo.MongoClient("mongodb://mongodb:27017/",
                                 username=m.username,
                                 password=m.password,
                                 authSource=m.authSource,
-                                authMechanism=m.authMechanism
+                                authMechanism=m.authMechanism,
+                                connect=False
                                 )
     db = mongo["res"]
-    col = db["resInfo"]
-    #     query = {"phone": "0221819999"}
+    col = db["resinfo5"]
+    query = {"phone": phone}
 
-    #     doc = col.find(query, {"_id": 0, "comment": 0, "content": 0})
-    doc = col.find({}, {"_id": 0, "comment": 0, "content": 0})
+    doc = col.find(query, {"_id": 0})
 
-    return render_template_string(res_html(doc))
+    return render_template_string(res_html(doc, image_url=image))
 
 
 """
@@ -595,6 +619,22 @@ def parse_dict(key, userid=None):
         return graph_liff_message(userid)
     elif key == "[::text:] 聯絡我們":
         return quickReplyTextSendMessage
+    elif key == "[::text:] 第0群":
+        return flex_return_whateat(0)
+    elif key == "[::text:] 第1群":
+        return flex_return_whateat(1)
+    elif key == "[::text:] 第2群":
+        return flex_return_whateat(2)
+    elif key == "[::text:] 第3群":
+        return flex_return_whateat(3)
+    elif key == "[::text:] 第4群":
+        return flex_return_whateat(4)
+    elif key == "[::text:] 第5群":
+        return flex_return_whateat(5)
+    elif key == "[::text:] 第6群":
+        return flex_return_whateat(6)
+    elif key == "[::text:] 第7群":
+        return flex_return_whateat(7)
 
 
 """

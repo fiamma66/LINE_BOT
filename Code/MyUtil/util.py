@@ -11,6 +11,124 @@ from math import radians, cos, pi
 
 """
 
+""" 分群的 Bubble """
+
+
+def cluster_bubbles():
+
+    def gen_every_cluster_bubble(*tup):
+        cluster_name = None
+        img_url = None
+        cluster_number = None
+        if tup:
+            cluster_name, img_url, cluster_number = list(*tup)
+
+        bubble = """
+    {
+    "type": "bubble",
+    "header": {
+      "type": "box",
+      "layout": "horizontal",
+      "contents": [
+        {
+          "type": "text",
+          "text": "%s",
+          "size": "sm",
+          "align": "center",
+          "weight": "bold",
+          "color": "#AAAAAA"
+        }
+      ]
+    },
+    "hero": {
+      "type": "image",
+      "url": "%s",
+      "size": "full",
+      "aspectRatio": "20:13",
+      "aspectMode": "cover",
+      "action": {
+        "type": "uri",
+        "label": "Action",
+        "uri": "%s"
+      }
+    },
+    "body": {
+      "type": "box",
+      "layout": "horizontal",
+      "spacing": "md",
+      "contents": [
+        {
+          "type": "box",
+          "layout": "vertical",
+          "flex": 2,
+          "contents": [
+            {
+              "type": "box",
+              "layout": "vertical",
+              "contents": [
+                {
+                  "type": "spacer"
+                },
+                {
+                  "type": "spacer"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": " ＊ 請至少選擇一群",
+              "flex": 1,
+              "size": "xs",
+              "align": "center",
+              "gravity": "bottom"
+            },
+            {
+              "type": "spacer"
+            }
+          ]
+        }
+      ]
+    },
+    "footer": {
+      "type": "box",
+      "layout": "horizontal",
+      "contents": [
+        {
+          "type": "button",
+          "action": {
+            "type": "message",
+            "label": "選擇",
+            "text": "[::text:] 第%s群"
+          }
+        }
+      ]
+    }
+  }
+      """ % (cluster_name, img_url, img_url, cluster_number)
+
+        return bubble
+
+    define_cluster = [
+        ("平價美食",
+         "https://img.sunnylife.tw/pixnet/d018bb14eeef9104009c4e2e015de79f.jpg", 0),
+        ("北方麵食",
+         "https://i1.wp.com/img.kokoha.tw/uploads/20180503175426_45.jpg", 1),
+        ("聚餐首選",
+         "https://i0.wp.com/img.jennifersmilecc.com/20171030133714_30.jpg", 2),
+        ("傳承老店",
+         "https://www.mirrormedia.com.tw/assets/images/20190210135019-193e927d818f4c207b872a2d4268acc5-tablet.jpg", 3),
+        ("背包族最愛",
+         "https://cw1.tw/CH/club/images/article/201802/article-5a795d7a75c28.jpg", 4),
+        ("打卡名店",
+         "https://cdn.walkerland.com.tw/images/upload/subject/b5ed1ee0a60189371ba01bc512550765e35fbfd3.jpg", 5),
+        ("口袋夠深",
+         "https://kenalice.tw/wp-content/uploads/2017/08/1502989242-1ec6eaf1be94f8778c3861ec16e07fd6.jpg", 6),
+        ("老饕聖地",
+         "https://a4.att.hudong.com/11/05/16200000028160133878050163025.jpg", 7)
+    ]
+    return list(map(gen_every_cluster_bubble, define_cluster))
+
+
 """ 給予用戶點選圖片的 Bubble """
 
 
@@ -270,7 +388,11 @@ def gen_bubble(*tup, server_url):
     address = address.replace("\r", "").replace("\n", "")
     optime = optime.replace("\t", "").replace("\r", "")
     getrate = get_rate_string(rate)
-    main_page = "https://" + server_url + "/index/resid="
+    if phone == "Not Available":
+        phone = "Sorry"
+    main_page = "https://" + server_url + "/index/resid=" + phone
+    if image is None:
+        image = "https://3dmart.com.tw/upload/news/2015/0924/123.jpg"
     
     bubble = """
 {

@@ -9,12 +9,16 @@ import random
 
 
 # fetch 包成list 傳入
-def res_html(fetchall):
+def res_html(fetchall, image_url):
     # sample fetchall
     if type(fetchall) != list:
         fetchall = list(fetchall)
     else:
         pass
+
+    if not fetchall:
+        sorryhtml = "<div><img src='https://3dmart.com.tw/upload/news/2015/0924/123.jpg'>抱歉，資料缺失了</div>"
+        return sorryhtml
 
     rate = statistics.mean(list(map(lambda x: x.get("rate"), fetchall)))
     if len(fetchall) > 4:
@@ -23,10 +27,11 @@ def res_html(fetchall):
         pass
     # {0} Name {1} phone {2} address {3} rate
     res_info = [
-        list(map(lambda x: x.get("Name"), fetchall))[0],
+        list(map(lambda x: x.get("name"), fetchall))[0],
         list(map(lambda x: x.get("phone"), fetchall))[0],
-        list(map(lambda x: x.get("info")[0].get("place"), fetchall))[0],
-        rate
+        list(map(lambda x: x.get("address"), fetchall))[0],
+        rate,
+        image_url
     ]
     html = """
     <!DOCTYPE html>
@@ -78,7 +83,7 @@ def res_html(fetchall):
 
   </div>
   <div class="responsive">
-      <img src="https://www.w3schools.com/csSref/pineapple.jpg" style='width:auto;height:100px;'>
+      <img src="{4}" style='width:auto;height:100px;'>
   </div>
   <!--  可愛分隔線  -->
   <hr size='8px' width='100%'>
@@ -93,11 +98,14 @@ def res_html(fetchall):
         prepare_img = {
             "m1": "https://attach2.mobile01.com/images/mobile01-facebook.jpg",
             "ifood": "https://img.3cpjs.com/2014/2ed_half/%E5%B0%81%E9%9D%A21.png",
-            "ipeen": "http://www.rootdesign.com.tw/wp-content/uploads/2014/05/rootdesign0505-01.png"
+            "ipeen": "/Images/ipeen.png",
+            "ptt": "/Images/ptt.jpg"
         }
         result = []
-        href = x.get("href").replace("www", "m", 1)
-        sentence = x.get("sentence")  # list object
+        href = x.get("href")
+        sentence = x.get("textrank")# list object
+        if sentence:
+            sentence = sentence[0:2]
         title = x.get("title")[0:12]
         result.append(title)
         result.append(href)
@@ -105,10 +113,12 @@ def res_html(fetchall):
             result.append(prepare_img.get("m1"))
         elif href.find("ifoodtw") != -1:
             result.append(prepare_img.get("ifood"))
+        elif href.find("ptt") != -1:
+            result.append(prepare_img.get("ptt"))
         else:
             result.append(prepare_img.get("ipeen"))
         for every_sentence in sentence:
-            result.append(every_sentence.get("sentence"))
+            result.append(every_sentence)
 
         return result
 
@@ -126,8 +136,6 @@ def res_html(fetchall):
           </a>
           <p style='font-size:16px;'>摘要:</p>       
           <p class='textrank'>1. {3}</p>
-          <p class='textrank'>2. {4}</p>
-          <p class='textrank'>3. {5}</p>
         </div>
       """.format(*all_article)
 
@@ -139,11 +147,12 @@ def res_html(fetchall):
     # 圖片部分
     # img_list = [img0,.....img9].__len__() = 10
     def extract_imgs(fetchall_obj):
-        img_list = []
-        for every_img in fetchall_obj.get("img"):
-            img_list.append(every_img)
+        imgs_list = []
+        if fetchall_obj.get("img"):
+            for every_img in fetchall_obj.get("img"):
+                imgs_list.append(every_img)
 
-        return img_list
+        return imgs_list
 
     sample = []
     for img_list in map(extract_imgs, fetchall):
@@ -155,14 +164,15 @@ def res_html(fetchall):
         pass
 
     # <img src="{0}">
-    html += """     
-  </div>
-  <div style="font-size:22px;font-weight:bold;">
-    圖片：
-    <br>
-    <div class='slick'>
-        {0}          
-    """.format("\n\t\t".join(map(lambda x: """<img src="{0}">""".format(x), sample)))
+    if sample:
+        html += """     
+      </div>
+      <div style="font-size:22px;font-weight:bold;">
+        圖片：
+        <br>
+        <div class='slick'>
+            {0}          
+        """.format("\n\t\t".join(map(lambda x: """<img src="{0}">""".format(x), sample)))
 
     # 相似推薦部分
     html += """
@@ -198,11 +208,21 @@ src="https://cdnjs.cloudflare.com/ajax/libs/danielgindi-jquery-backstretch/2.1.1
     # location = [lat,lng]
     # escape format {} use {{ some script }}
     # JavaScript Main
+    postion_x = list(set(map(lambda x: x.get("lat"), fetchall)))
+    postion_y = list(set(map(lambda x: x.get("lon"), fetchall)))
+    if postion_x and postion_y:
+        if None not in postion_x:
+            postion_x = postion_x[0]
+            postion_y = postion_y[0]
+        else:
+            postion_x = 25.046891
+            postion_y = 121.516602
+
     html += """
         <script>
         var shop_lat = {0}
         var shop_lng = {1}
-        """.format(*list(map(lambda x: x.get("info")[0].get("point"), fetchall))[0].split(","))
+        """.format(postion_x, postion_y)
 
     html += """
       // slick 幻燈片秀  
@@ -218,7 +238,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/danielgindi-jquery-backstretch/2.1.1
           cssEase: 'linear',
           mobileFirst: true,
         });
-        $(document.body).backstretch("/Images/background.gif");
+        $(document.body).backstretch("/Images/anime2.gif");
         console.log("ready");
       });  
 
@@ -312,7 +332,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/danielgindi-jquery-backstretch/2.1.1
 
         $.ajax({
           type: "POST",
-          url: "https://91e47741.ngrok.io/countRes",
+          url: "/countRes",
           data: JSON.stringify({'resID': 1}),
           dataType: 'json',
           success: function(response) {

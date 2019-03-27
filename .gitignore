@@ -6,4 +6,5 @@ Code/line_secret_key
 __pycache__*
 Code/pylineliff/__*
 mongoData/*
+Code/MyUtil/mysql_account.py
 
